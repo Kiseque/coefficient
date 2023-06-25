@@ -2,10 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\CoefficientsEntity;
-use App\Entity\EmployeeEntity;
-use App\Entity\WorkMonthEntity;
 use App\service\coefficients\CoefficientsService;
+use App\service\Constants;
 
 require_once "bootstrap.php";
 
@@ -18,21 +16,12 @@ class CoefficientsController
         $this->coefficientService = new CoefficientsService();
     }
 
-    public function x()
-    {
-        $entityManager = getEntityManager();
-        $months = $entityManager->getRepository(WorkMonthEntity::class)->findAll();
-        foreach ($months as $month) {
-            var_dump($month->getDate()->format('d/m/Y')); die;
-        }
-    }
-
     public function insertOrUpdateRowCoefficients()
     {
         if (isset($_GET['employeeId']) && isset($_GET['monthId'])) {
             $this->coefficientService->insertOrUpdateRowCoefficients($_GET['id'], $_GET['employeeId'], $_GET['monthId']);
         } else {
-            outputJson(false, 'Bad request', 400);
+            outputJson(false, Constants::BAD_REQUEST_MESSAGE, Constants::BAD_REQUEST_CODE);
         }
     }
 
@@ -41,7 +30,7 @@ class CoefficientsController
         if (isset($_GET['id'])) {
             $this->coefficientService->deleteRowCoefficients($_GET['id']);
         } else {
-            outputJson(false, 'Bad request', 400);
+            outputJson(false, Constants::BAD_REQUEST_MESSAGE, Constants::BAD_REQUEST_CODE);
         }
     }
 

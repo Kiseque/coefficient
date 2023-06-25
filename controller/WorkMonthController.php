@@ -2,10 +2,8 @@
 
 namespace App\Controller;
 
-
-use App\Entity\WorkMonthEntity;
+use App\service\Constants;
 use App\service\workmonth\WorkMonthService;
-
 
 class WorkMonthController
 {
@@ -15,9 +13,13 @@ class WorkMonthController
         $this->workMonthService = new WorkMonthService();
     }
 
-    function getLastSixMonth()
+    public function deleteWorkMonth()
     {
-        $this->workMonthService->getLastSixMonth();
+        if (isset($_GET['id'])) {
+            $this->workMonthService->deleteWorkMonth($_GET['id']);
+        } else {
+            outputJson(false, Constants::BAD_REQUEST_MESSAGE, Constants::BAD_REQUEST_CODE);
+        }
     }
 
 

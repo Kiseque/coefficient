@@ -1,20 +1,36 @@
 <?php
 
 namespace App\service\workmonth;
+use App\Entity\CoefficientsEntity;
 use App\Entity\WorkMonthEntity;
+use App\service\Constants;
+use Error;
+use Exception;
 
 require_once 'bootstrap.php';
 class WorkMonthService
 {
-    public function getLastSixMonth()
+    private $entityManager;
+    public function __construct()
     {
-        $entityManager = getEntityManager();
-        $month = $entityManager->getRepository(WorkMonthEntity::class);
-        $query = $month->createQueryBuilder('work_month')
-            ->orderBy('work_month.date', 'DESC')
-            ->setMaxResults(6)
-            ->getQuery();
-        $sortedEntities = $query->getResult();
+        $this->entityManager = getEntityManager();
+    }
+
+    public function deleteWorkMonth($id)
+    {
+        try {
+            $workMonth = $this->entityManager->getRepository(WorkMonthEntity::class)->find($id);
+            $this->entityManager->remove($workMonth);
+            $coefficient = $this->entityManager->getRepository(CoefficientsEntity::class)->findBy(['monthId' => $id]);
+            foreach ($coefficient as $item) {
+                $this->entityManager->remove($item);
+            }
+            $this->entityManager->flush();
+        } catch (Exception $e) {
+            outputJson(false, $e->getMessage(), $e->getCode());
+        } catch (Error $e) {
+            outputJson(false, Constants::BAD_REQUEST_MESSAGE, Constants::BAD_REQUEST_CODE);
+        }
     }
 
 }

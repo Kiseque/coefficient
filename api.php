@@ -5,6 +5,8 @@
 //    die;
 //});
 
+use App\service\Constants;
+
 require_once "bootstrap.php";
 
 try {
@@ -12,10 +14,10 @@ try {
     $method = new $controller();
     $response = $method->{$_GET["method"]}($_REQUEST);
     if ($response != null) {
-        outputJson(true, $response, 200);
+        outputJson(true, $response, Constants::OK_REQUEST_CODE);
     }
 } catch (Exception $e) {
     outputJson(false, $e->getMessage(), $e->getCode());
 } catch (Error $e) {
-    outputJson(false, 'Bad request', 400);
+    outputJson(false, Constants::BAD_REQUEST_MESSAGE, Constants::BAD_REQUEST_CODE);
 }
